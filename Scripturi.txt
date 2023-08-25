@@ -1,0 +1,115 @@
+2.add vlan
+
+vlan 10
+exit
+do wr
+vlan 20
+exit
+do wr
+vlan 30
+exit 
+do wr
+vlan 40
+exit 
+do wr
+vlan 98
+exit 
+do wr
+vlan 99
+exit 
+do wr
+
+3.interface access
+
+interface fa0/20
+switchport mode access
+switchport access vlan 30
+do wr
+exit
+interface fa0/21
+switchport mode access
+switchport access vlan 40
+do wr
+
+
+
+
+4.interface trunk
+
+interface fa0/4
+switchport mode trunk
+switchport trunk allowed vlan 10,20
+do wr
+interface fa0/1
+switchport mode trunk
+switchport trunk allowed vlan 10,20
+do wr
+
+5.SubIf pe R
+
+interface gi0/0.10
+encapsulation dot1q 10
+ip address 192.95.10.1 255.255.255.0
+exit
+do wr
+
+interface gi0/0.20
+encapsulation dot1q 20
+ip address 192.95.20.1 255.255.255.0
+exit
+do wr
+
+interface gi0/0.98
+encapsulation dot1q 98
+ip address 192.95.98.1 255.255.255.0
+exit
+do wr
+
+6.IP pe SW
+
+interface vlan 99
+ip address 192.3.99.4 255.255.255.0
+no shutdown
+exit
+do wr
+
+5.DGW pe SW
+
+ip default-gateway 192.6.98.1
+do wr
+
+ip default-gateway 192.3.99.1
+do wr
+
+
+i.
+
+interface s0/1/1
+ip address 10.0.0.5 255.255.255.252
+no shutdown
+
+j.
+
+router rip
+version 2
+no auto
+network 10.0.0.4
+network 10.0.0.0
+do wr
+
+l.
+
+R1
+ip route 0.0.0.0 0.0.0.0 s0/0/1
+
+ISP
+ip route 0.0.0.0 0.0.0.0 s0/0/0
+ip route 10.0.0.0 0.0.0.0 s0/0/0
+ip route 10.0.0.4 0.0.0.0 s0/0/0
+ip route 10.0.0.8 0.0.0.0 s0/0/0
+ip route 192.95.10.0 255.255.255.0 s0/0/0
+ip route 192.95.20.0 255.255.255.0 s0/0/0
+ip route 192.95.30.0 255.255.255.0 s0/0/0
+ip route 192.95.40.0 255.255.255.0 s0/0/0
+ip route 192.6.98.0 255.255.255.0 s0/0/0
+ip route 192.3.99.0 255.255.255.0 s0/0/0
